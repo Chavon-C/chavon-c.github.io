@@ -431,7 +431,6 @@ footer {
 /* Section Spacing */
 .home-section-portfolio {
     padding: 40px 20px;
-    background-color: #f9f9f9;
 }
 
 .category {
@@ -527,6 +526,7 @@ footer {
     font-size: 18px;
     font-weight: bold;
     padding: 10px;
+    text-align: left;
 }
 
 /* Show overlay on hover */
