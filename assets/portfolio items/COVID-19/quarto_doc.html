@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>COVID-19 data exploration</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="quarto_doc_files/libs/clipboard/clipboard.min.js"></script>
+<script src="quarto_doc_files/libs/quarto-html/quarto.js"></script>
+<script src="quarto_doc_files/libs/quarto-html/popper.min.js"></script>
+<script src="quarto_doc_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="quarto_doc_files/libs/quarto-html/anchor.min.js"></script>
+<link href="quarto_doc_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="quarto_doc_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="quarto_doc_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="quarto_doc_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="quarto_doc_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">COVID-19 data exploration</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="context-and-significance-of-data-set" class="level2">
+<h2 class="anchored" data-anchor-id="context-and-significance-of-data-set"><strong>Context and significance of data set</strong></h2>
+<p>This data set covers the new and total cases and deaths of COVID-19 in all countries, it is recorded in intervals of weekly and bi weekly. It also has a column for total cases and deaths. There are not only individual countries but also groups of low-income to high-income countries as well as the observations for the world. The date that this data set starts at is 2020-01-05 and ends at 2024-08-04.</p>
+<p>This data set is very insightful because it shows the numbers of new cases and deaths for each country. This means that researchers can make meaningful comparisons between each country and can discuss reasons as to why there is such a discrepancy between COVID-19 cases in countries. For example, despite some countries having the same population size and GDP, their COVID-19 cases may have a huge difference, they could then compare how the country’s government handled the pandemic and evaluate the effectiveness of their actions. This could then further help develop new, more effective policies regarding public health and safety and prepare for the future, should there be another pandemic.</p>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling"><strong>Data Wrangling</strong></h2>
+<p>For my data set, I decided to choose 5 countries to explore, I had randomly picked 5 countries that had the population size between 10-11 million. This ended up being: Czechia, Greece, Jordan, Portugal and Sweden. Furthermore, according to the World Bank (2022), all 5 of these countries are upper-middle and high income countries. I then decided to keep just the new cases and deaths, total cases and deaths and the date at which each observation occurred. To make my data frame easier for myself to analyse, I created a new variable which showed the monthly occurrence of observations rather than weekly.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Dates</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Data Frames</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span>data<span class="sc">%&gt;%</span><span class="fu">filter</span>(location <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Portugal"</span>, <span class="st">"Czechia"</span>, <span class="st">"Sweden"</span>, <span class="st">"Greece"</span>, <span class="st">"Jordan"</span>))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>date<span class="ot">&lt;-</span><span class="fu">ymd</span>(data<span class="sc">$</span>date)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>month<span class="ot">&lt;-</span><span class="fu">as.Date</span>(<span class="fu">cut</span>(data<span class="sc">$</span>date, <span class="at">breaks =</span> <span class="st">'month'</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span>data<span class="sc">%&gt;%</span><span class="fu">select</span>(month, location, new_cases, new_deaths, total_cases, total_deaths)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span>data<span class="sc">%&gt;%</span><span class="fu">unite</span>(<span class="at">col =</span> <span class="st">"country_date"</span>, location, month, <span class="at">sep =</span> <span class="st">"/"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df_new_cases<span class="ot">&lt;-</span>data<span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="at">id=</span><span class="fu">consecutive_id</span>(country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(<span class="at">value=</span><span class="fu">sum</span>(new_cases), <span class="at">.by =</span> <span class="fu">c</span>(id, country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>id)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df_total_cases<span class="ot">&lt;-</span>data<span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="at">id=</span><span class="fu">consecutive_id</span>(country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(<span class="at">value=</span>(total_cases), <span class="at">.by =</span> <span class="fu">c</span>(id, country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>id)<span class="sc">%&gt;%</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country_date)<span class="sc">%&gt;%</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(last)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>df_new_deaths<span class="ot">&lt;-</span>data<span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="at">id=</span><span class="fu">consecutive_id</span>(country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(<span class="at">value=</span><span class="fu">sum</span>(new_deaths), <span class="at">.by =</span> <span class="fu">c</span>(id, country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>id)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>df_total_deaths<span class="ot">&lt;-</span>data<span class="sc">%&gt;%</span><span class="fu">mutate</span>(<span class="at">id=</span><span class="fu">consecutive_id</span>(country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reframe</span>(<span class="at">value=</span>(total_deaths), <span class="at">.by =</span> <span class="fu">c</span>(id, country_date))<span class="sc">%&gt;%</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>id)<span class="sc">%&gt;%</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country_date)<span class="sc">%&gt;%</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise_all</span>(last)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>news<span class="ot">&lt;-</span><span class="fu">merge</span>(df_new_cases,df_new_deaths,<span class="at">by=</span><span class="st">"country_date"</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>totals<span class="ot">&lt;-</span><span class="fu">merge</span>(df_total_cases, df_total_deaths, <span class="at">by=</span><span class="st">"country_date"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>final_df<span class="ot">&lt;-</span><span class="fu">merge</span>(news, totals, <span class="at">by=</span><span class="st">"country_date"</span>)<span class="sc">%&gt;%</span><span class="fu">rename</span>(<span class="st">"new cases"</span> <span class="ot">=</span> value.x.x, <span class="st">"new deaths"</span> <span class="ot">=</span> value.y.x, <span class="st">"total cases"</span><span class="ot">=</span> value.x.y, <span class="st">"total deaths"</span><span class="ot">=</span> value.y.y)<span class="sc">%&gt;%</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(<span class="at">col =</span> <span class="st">"country_date"</span>, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"country"</span>, <span class="st">"month"</span>), <span class="at">sep =</span> <span class="st">"/"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>My final data set which I named ‘final_df’ includes the country, month, new cases, new deaths, total cases and total deaths. When turning the date into year and month, it kept the day and changed that to ‘1’ , however this does not impact my data set.</p>
+<p>Here is a sample of my data set:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="lhgzfgfaxg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#lhgzfgfaxg table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#lhgzfgfaxg thead, #lhgzfgfaxg tbody, #lhgzfgfaxg tfoot, #lhgzfgfaxg tr, #lhgzfgfaxg td, #lhgzfgfaxg th {
+  border-style: none;
+}
+
+#lhgzfgfaxg p {
+  margin: 0;
+  padding: 0;
+}
+
+#lhgzfgfaxg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#lhgzfgfaxg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#lhgzfgfaxg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#lhgzfgfaxg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#lhgzfgfaxg .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#lhgzfgfaxg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#lhgzfgfaxg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#lhgzfgfaxg .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#lhgzfgfaxg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#lhgzfgfaxg .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#lhgzfgfaxg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#lhgzfgfaxg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#lhgzfgfaxg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#lhgzfgfaxg .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#lhgzfgfaxg .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lhgzfgfaxg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#lhgzfgfaxg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#lhgzfgfaxg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#lhgzfgfaxg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lhgzfgfaxg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#lhgzfgfaxg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lhgzfgfaxg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#lhgzfgfaxg .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+#lhgzfgfaxg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lhgzfgfaxg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lhgzfgfaxg .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lhgzfgfaxg .gt_left {
+  text-align: left;
+}
+
+#lhgzfgfaxg .gt_center {
+  text-align: center;
+}
+
+#lhgzfgfaxg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#lhgzfgfaxg .gt_font_normal {
+  font-weight: normal;
+}
+
+#lhgzfgfaxg .gt_font_bold {
+  font-weight: bold;
+}
+
+#lhgzfgfaxg .gt_font_italic {
+  font-style: italic;
+}
+
+#lhgzfgfaxg .gt_super {
+  font-size: 65%;
+}
+
+#lhgzfgfaxg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#lhgzfgfaxg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#lhgzfgfaxg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#lhgzfgfaxg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#lhgzfgfaxg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#lhgzfgfaxg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#lhgzfgfaxg .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#lhgzfgfaxg .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#lhgzfgfaxg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="month" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">month</th>
+<th id="new cases" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">new cases</th>
+<th id="new deaths" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">new deaths</th>
+<th id="total cases" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">total cases</th>
+<th id="total deaths" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">total deaths</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd gt_group_heading_row">
+<td colspan="5" id="Czechia" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Czechia</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_right" headers="Czechia  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2022-07-01</td>
+<td class="gt_row gt_right" headers="Czechia  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">75008</td>
+<td class="gt_row gt_right" headers="Czechia  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">181</td>
+<td class="gt_row gt_right" headers="Czechia  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">4286328</td>
+<td class="gt_row gt_right" headers="Czechia  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">40581</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="Czechia  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2023-07-01</td>
+<td class="gt_row gt_right" headers="Czechia  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">345</td>
+<td class="gt_row gt_right" headers="Czechia  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">4</td>
+<td class="gt_row gt_right" headers="Czechia  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">4643069</td>
+<td class="gt_row gt_right" headers="Czechia  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">42816</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="5" id="Greece" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Greece</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_right" headers="Greece  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2022-02-01</td>
+<td class="gt_row gt_right" headers="Greece  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">478425</td>
+<td class="gt_row gt_right" headers="Greece  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">2343</td>
+<td class="gt_row gt_right" headers="Greece  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">2411996</td>
+<td class="gt_row gt_right" headers="Greece  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">25869</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="Greece  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2020-09-01</td>
+<td class="gt_row gt_right" headers="Greece  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">7545</td>
+<td class="gt_row gt_right" headers="Greece  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">122</td>
+<td class="gt_row gt_right" headers="Greece  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">18243</td>
+<td class="gt_row gt_right" headers="Greece  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">387</td>
+</tr>
+<tr class="odd gt_group_heading_row">
+<td colspan="5" id="Jordan" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Jordan</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_right" headers="Jordan  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2021-06-01</td>
+<td class="gt_row gt_right" headers="Jordan  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">14180</td>
+<td class="gt_row gt_right" headers="Jordan  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">275</td>
+<td class="gt_row gt_right" headers="Jordan  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">749319</td>
+<td class="gt_row gt_right" headers="Jordan  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">9718</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="Jordan  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2024-08-01</td>
+<td class="gt_row gt_right" headers="Jordan  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">0</td>
+<td class="gt_row gt_right" headers="Jordan  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">0</td>
+<td class="gt_row gt_right" headers="Jordan  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">1746997</td>
+<td class="gt_row gt_right" headers="Jordan  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">14122</td>
+</tr>
+<tr class="even gt_group_heading_row">
+<td colspan="5" id="Portugal" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Portugal</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td class="gt_row gt_right" headers="Portugal  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2021-05-01</td>
+<td class="gt_row gt_right" headers="Portugal  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">18008</td>
+<td class="gt_row gt_right" headers="Portugal  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">59</td>
+<td class="gt_row gt_right" headers="Portugal  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">836944</td>
+<td class="gt_row gt_right" headers="Portugal  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">17013</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="Portugal  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2022-09-01</td>
+<td class="gt_row gt_right" headers="Portugal  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">69098</td>
+<td class="gt_row gt_right" headers="Portugal  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">170</td>
+<td class="gt_row gt_right" headers="Portugal  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">5470091</td>
+<td class="gt_row gt_right" headers="Portugal  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">25039</td>
+</tr>
+<tr class="odd gt_group_heading_row">
+<td colspan="5" id="Sweden" class="gt_group_heading" data-quarto-table-cell-role="th" scope="colgroup">Sweden</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td class="gt_row gt_right" headers="Sweden  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2022-05-01</td>
+<td class="gt_row gt_right" headers="Sweden  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">9071</td>
+<td class="gt_row gt_right" headers="Sweden  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">216</td>
+<td class="gt_row gt_right" headers="Sweden  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">2509503</td>
+<td class="gt_row gt_right" headers="Sweden  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">19021</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="Sweden  month" style="font-family: 'Source Sans Pro'; font-weight: 400">2021-02-01</td>
+<td class="gt_row gt_right" headers="Sweden  new cases" style="font-family: 'Source Sans Pro'; font-weight: 400">91100</td>
+<td class="gt_row gt_right" headers="Sweden  new deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">806</td>
+<td class="gt_row gt_right" headers="Sweden  total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">664854</td>
+<td class="gt_row gt_right" headers="Sweden  total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">12996</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="data-exploration-and-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="data-exploration-and-visualisation"><strong>Data exploration and visualisation</strong></h2>
+<p>Below is a table that shows the overall total cases and deaths as well as the mean of new cases and deaths (monthly) per country. As you can see, Portugal, Greece and Chezchia had a significantly larger amount of total cases than Jordan and Sweden despite despite having similar population sizes and all being HIC’s. This difference could be due to factors mentioned before such as government handling of the pandemic. The mean monthly cases and deaths roughly corresponds to the total cases and total deaths.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="sfhbpheiws" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#sfhbpheiws table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#sfhbpheiws thead, #sfhbpheiws tbody, #sfhbpheiws tfoot, #sfhbpheiws tr, #sfhbpheiws td, #sfhbpheiws th {
+  border-style: none;
+}
+
+#sfhbpheiws p {
+  margin: 0;
+  padding: 0;
+}
+
+#sfhbpheiws .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#sfhbpheiws .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#sfhbpheiws .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#sfhbpheiws .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_bottom_border {
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_col_headings {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#sfhbpheiws .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#sfhbpheiws .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#sfhbpheiws .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#sfhbpheiws .gt_column_spanner {
+  border-bottom-style: none;
+  border-bottom-width: 1px;
+  border-bottom-color: #334422;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#sfhbpheiws .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#sfhbpheiws .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#sfhbpheiws .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#sfhbpheiws .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#sfhbpheiws .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#sfhbpheiws .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#sfhbpheiws .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sfhbpheiws .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#sfhbpheiws .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#sfhbpheiws .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#sfhbpheiws .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sfhbpheiws .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#sfhbpheiws .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sfhbpheiws .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#sfhbpheiws .gt_table_body {
+  border-top-style: none;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #FFFFFF;
+}
+
+#sfhbpheiws .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sfhbpheiws .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#sfhbpheiws .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#sfhbpheiws .gt_left {
+  text-align: left;
+}
+
+#sfhbpheiws .gt_center {
+  text-align: center;
+}
+
+#sfhbpheiws .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#sfhbpheiws .gt_font_normal {
+  font-weight: normal;
+}
+
+#sfhbpheiws .gt_font_bold {
+  font-weight: bold;
+}
+
+#sfhbpheiws .gt_font_italic {
+  font-style: italic;
+}
+
+#sfhbpheiws .gt_super {
+  font-size: 65%;
+}
+
+#sfhbpheiws .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#sfhbpheiws .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#sfhbpheiws .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#sfhbpheiws .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#sfhbpheiws .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#sfhbpheiws .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#sfhbpheiws .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#sfhbpheiws .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#sfhbpheiws div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_col_headings">
+<th id="country" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">country</th>
+<th id="Total cases" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">Total cases</th>
+<th id="Total deaths" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">Total deaths</th>
+<th id="Mean cases" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">Mean cases</th>
+<th id="Mean deaths" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase" scope="col">Mean deaths</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="country" style="font-family: 'Source Sans Pro'; font-weight: 400">Czechia</td>
+<td class="gt_row gt_right" headers="Total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">4761919</td>
+<td class="gt_row gt_right" headers="Total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">43509</td>
+<td class="gt_row gt_right" headers="Mean cases" style="font-family: 'Source Sans Pro'; font-weight: 400">85034.27</td>
+<td class="gt_row gt_right" headers="Mean deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">776.9464</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="country" style="font-family: 'Source Sans Pro'; font-weight: 400">Greece</td>
+<td class="gt_row gt_right" headers="Total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">5673681</td>
+<td class="gt_row gt_right" headers="Total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">39258</td>
+<td class="gt_row gt_right" headers="Mean cases" style="font-family: 'Source Sans Pro'; font-weight: 400">101315.73</td>
+<td class="gt_row gt_right" headers="Mean deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">701.0357</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="country" style="font-family: 'Source Sans Pro'; font-weight: 400">Jordan</td>
+<td class="gt_row gt_right" headers="Total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">1746997</td>
+<td class="gt_row gt_right" headers="Total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">14122</td>
+<td class="gt_row gt_right" headers="Mean cases" style="font-family: 'Source Sans Pro'; font-weight: 400">31196.38</td>
+<td class="gt_row gt_right" headers="Mean deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">252.1786</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="country" style="font-family: 'Source Sans Pro'; font-weight: 400">Portugal</td>
+<td class="gt_row gt_right" headers="Total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">5664109</td>
+<td class="gt_row gt_right" headers="Total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">28809</td>
+<td class="gt_row gt_right" headers="Mean cases" style="font-family: 'Source Sans Pro'; font-weight: 400">101144.80</td>
+<td class="gt_row gt_right" headers="Mean deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">514.4464</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="country" style="font-family: 'Source Sans Pro'; font-weight: 400">Sweden</td>
+<td class="gt_row gt_right" headers="Total cases" style="font-family: 'Source Sans Pro'; font-weight: 400">2755181</td>
+<td class="gt_row gt_right" headers="Total deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">27399</td>
+<td class="gt_row gt_right" headers="Mean cases" style="font-family: 'Source Sans Pro'; font-weight: 400">49199.66</td>
+<td class="gt_row gt_right" headers="Mean deaths" style="font-family: 'Source Sans Pro'; font-weight: 400">489.2679</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>I thought it would be interesting to visualise the distribution of the data and the quartiles therefore I decided to create box plots for total cases and deaths.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Cases</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Deaths</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>First off, we can see that there is a negative skew for the totals in each country, this is due to the fact that we are looking at cumulative cases and deaths, and therefore the numbers will keep increasing, thus causing this skew.</p>
+<p>The box plot shows that Jordan has no whiskers, i.e.&nbsp;meaning that their upper quartile is the same as their max quartile. We can see that in the data frame, Jordan has stopped getting new deaths since 2022-September, whilst for others there are still new deaths occurring until recently in 2024. Hence why the interquartile range for Jordan is also close to the upper quartile.</p>
+<p>Upon inspecting the box plots and data, it could be that either Jordan did an excellent job of eliminating new cases hence 0 deaths for the last 2 years or that the data is not correctly recorded. It is unlikely that the values are missing because other countries in the full data set have NA values whilst for Jordan it is 0.</p>
+<p>I believe that creating box plots for the distribution of new cases and deaths would be more insightful as it shows the spread and variability of the observations over time.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Cases</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Deaths</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>In these box plots, we can see a high number of outliers for all countries meaning that in some months, there was a huge spike in cases and deaths compared to the typical amount. The length of the actual box are all relatively short, meaning that the cases and deaths were relatively similar each month. However it seems like Greece has the most variability within the 50% of their data. The box plot shows that Greece and Czechia have a higher median compared to other countries, implying that there were more monthly cases. For Jordan, their middle 50% of deaths was close to their lower quartile, meaning that there is a positive skew where the mean is larger than the median.</p>
+<p>To visualise the time frame of when the cases and deaths happened for each country, I created a line graph and created a function to automate the plotting.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Portugal</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Sweden</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Greece</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">Jordan</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-5" role="tab" aria-controls="tabset-4-5" aria-selected="false" href="">Czechia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-4-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-5-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>It is interesting to see that although Sweden’s new cases has remained relatively stable for the past 2 years, the amount of new deaths seem to spike up in the winter months. Maybe this could be due to Sweden having a high ageing population and therefore are more vulnerable to COVID-19, especially in the colder, harsher months. As mentioned during the box plots, Greece seems to have the highest variability, with quite long waves of deaths and cases.</p>
+<p>To be able to compare each country in terms of their total cases and deaths, I overlapped each country in one graph.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Cases</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Deaths</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="quarto_doc_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>As you can see in the graphs above, there was a huge spike of new cases between October of 2021 to April 2022, however the number of deaths did not see such a huge spike, rather it was earlier on in the pandemic where there was a spike in deaths, between August 2020 to May 2021, when cases not as much. This could be due to the fact that earlier on in the pandemic, there were no vaccines meaning that there were more deaths despite having relatively less cases. However as vaccines were rolled out, we can see that despite a huge spike in cases, there were less deaths during the same time period.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
