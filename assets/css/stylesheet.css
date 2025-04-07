@@ -228,117 +228,6 @@ i.fa {
     color: #3f6982;
 }
 
-/*
-.portfolio-items-inline {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
-    gap: 60px;
-    flex: 1 1 0;
-}
-
-@media (max-width: 900px) {
-    .portfolio-items-inline {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-        justify-content: center;
-        gap: 40px;
-    }
-
-    .portfolio-item {
-        width: 45%;
-    }
-}
-
-@media (max-width: 600px) {
-    .portfolio-items-inline {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-        justify-content: center;
-        gap: 30px;
-    }
-
-    .portfolio-item {
-        width: 100%;
-    }
-}
-
-.home-section-portfolio {
-    padding: 20px;
-}
-
-.text p {
-    font-size: larger;
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.category {
-    margin-bottom: 60px;
-    display: flex;
-    flex-direction: column;
-}
-
-.category h3 {
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 60px;
-    color: #333;
-}
-
-
-.portfolio-item {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-
-    max-width: 70%;
-    align-items: center;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    background-color: #f2f2f2;
-    width: 100%;
-}
-
-.portfolio-item img {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.portfolio-item-title {
-    text-align: center;
-    font-size: 1.4rem;
-    padding: 15px;
-    background-color: #f2f2f2;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.portfolio-item img:hover {
-    transform: scale(1.05);
-}
-
-.portfolio-item a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.portfolio-item p {
-    font-size: medium;
-} 
-
-*/
-
 /*contact page*/
 
 .contact {
@@ -543,6 +432,10 @@ footer {
 .home-section-portfolio {
     padding: 40px 20px;
     background-color: #f9f9f9;
+}
+
+.category {
+    margin-bottom: 50px;
 }
 
 /* Section Headers */
